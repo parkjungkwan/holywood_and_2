@@ -70,7 +70,7 @@ public class Index extends AppCompatActivity {
             Log.d("실행할 쿼리 :: ",sql);
             db.execSQL(sql);
             Log.d("=====================","create 쿼리실행완료");
-            String[] names = {"강동원","윤아","임수정","박보검","송중기"};
+           /* String[] names = {"강동원","윤아","임수정","박보검","송중기"};
             String[] emails = {"kangdw","yoona","limsj","parkbk","songjg"};
             for(int i = 0; i<names.length;i++){
                 Log.d("입력될 이름 :: ", names[i]);
@@ -99,6 +99,7 @@ public class Index extends AppCompatActivity {
                         "photo_"+(i+1)));
             }
             Log.d(">>>> ","INSERT 쿼리 완료");
+            */
         }
 
         @Override
