@@ -1,10 +1,12 @@
 package app.demo.com.contacts;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -48,7 +50,35 @@ public class MemberList extends AppCompatActivity {
                     startActivity(intent);
                 });
 
-        // memberList.setOnItemLongClickListener(()->{});
+        memberList.setOnItemLongClickListener(
+                (AdapterView<?> p, View v, int i, long l)->{
+                    Member m = (Member)memberList.getItemAtPosition(i);
+                    new AlertDialog.Builder(_this)
+                            .setTitle("DELETE")
+                            .setMessage("정말 삭제할까요?")
+                            .setPositiveButton(
+                                    android.R.string.yes,
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            // 삭제 쿼리 실행
+                                            Toast.makeText(_this,"삭제완료 !!",Toast.LENGTH_LONG).show();
+                                            startActivity(new Intent(_this, MemberList.class));
+                                        }
+                                    }
+                            )
+                            .setNegativeButton(
+                                    android.R.string.no,
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Toast.makeText(_this,"삭제취소 !!",Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                            )
+                            .show();
+                    return true;
+        });
 
 
     }
