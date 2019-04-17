@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,7 @@ public class MemberList extends AppCompatActivity {
                   }
               }.get())
         );
+
     }
     private class MemberListQuery extends Index.QueryFactory{
         SQLiteOpenHelper helper;
@@ -71,9 +73,11 @@ public class MemberList extends AppCompatActivity {
                     m.phone = c.getString(c.getColumnIndex(Index.MPHONE));
                     m.addr = c.getString(c.getColumnIndex(Index.MEMAIL));
                     m.photo = c.getString(c.getColumnIndex(Index.MPHOTO));
+                    Log.d("멤버정보 :  ",m.name);
                     list.add(m);
 
                 }
+                Toast.makeText(_this, "회원의 수"+list.size(),Toast.LENGTH_LONG).show();
             }else{
                 Toast.makeText(_this, "등록된 회원이 없음",Toast.LENGTH_LONG).show();
 
@@ -121,7 +125,30 @@ public class MemberList extends AppCompatActivity {
             }else{
                 holder = (ViewHolder) v.getTag();
             }
+            ItemPhoto query = new ItemPhoto(_this);
+            query.seq = list.get(i).seq+"";
 
+            holder.photo
+                    .setImageDrawable(
+                            getResources()
+                                    .getDrawable(
+                                        getResources()
+                                            .getIdentifier(
+                                                    _this.getPackageName()+":drawable/"
+                                                    +((String)new Index.ISupplier() {
+                                                        @Override
+                                                        public Object get() {
+                                                            return query.get();
+                                                        }
+                                                    }.get()),
+                                                    null,
+                                                    null),
+                                    _this.getTheme()
+                            )
+                    );
+
+            holder.name.setText(list.get(i).name);
+            holder.phone.setText(list.get(i).phone);
             return v;
         }
     }
@@ -129,6 +156,45 @@ public class MemberList extends AppCompatActivity {
         ImageView photo;
         TextView name, phone;
     }
+
+    private class MemberPhotoQuery extends Index.QueryFactory{
+        SQLiteOpenHelper helper;
+        public MemberPhotoQuery(Context _this) {
+            super(_this);
+            helper = new Index.SQLiteHelper(_this);
+        }
+
+        @Override
+        public SQLiteDatabase getDatabase() {
+            return helper.getReadableDatabase();
+        }
+    }
+
+    private class ItemPhoto extends MemberListQuery{
+        String seq;
+        public ItemPhoto(Context _this) {
+            super(_this);
+        }
+        public String get(){
+            Cursor c = getDatabase()
+                    .rawQuery(String.format(
+                            " SELECT %s FROM %s "
+                            +" WHERE %s LIKE '%s' "
+                            ,Index.MPHOTO, Index.MEMBERS,
+                            Index.MSEQ, seq), null
+                    );
+
+            String result = "";
+            if(c != null){
+                if(c.moveToNext()){
+                    result = c.getString(c.getColumnIndex(Index.MPHOTO));
+                }
+            }
+            return result;
+        }
+
+    }
+
 
 
 }
