@@ -27,7 +27,7 @@ public class MemberDetail extends AppCompatActivity {
         Member m = (Member)new ISupplier() {
             @Override
             public Object get() {
-                return null;
+                return query.get();
             }
         }.get();
         ImageView photo = findViewById(R.id.profile);
